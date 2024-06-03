@@ -1,9 +1,9 @@
 ---
 name: "\U0001F6E0️ Feature request"
 about: Suggest an idea for this project
-title: ''
-labels: ''
-assignees: ''
+title: "[\U0001F6E0️]"
+labels: bug
+assignees: Saladrian
 
 ---
 
