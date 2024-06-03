@@ -1,0 +1,26 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "wiresense"
+version = "1.0.0"
+authors = [
+    { name="Saladrian" }
+]
+description = "Client libary for Wiresense"
+readme = "README.md"
+requires-python = ">=3.12"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "aiohttp>=3.9.5",
+    "websockets>=12.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/Wiresense/wiresense.py#readme"
+Issues = "https://github.com/Wiresense/wiresense.py/issues"
