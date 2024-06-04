@@ -116,7 +116,7 @@ async def handle_http_request(request):
     """
 
     url_path = request.match_info.get('path', '')
-    url_path = url_path.replace('\n', '').replace('\r', '')
+    url_path = url_path.replace('\r', '\\r').replace('\n', '\\n')
     url_parts = url_path.split("/")
     if len(url_parts) == 2 and url_parts[1] == "data.csv":
         s_name = url_parts[0]
