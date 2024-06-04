@@ -26,22 +26,6 @@ class Wiresense:
     configured: bool = False
     clients: List[websockets.WebSocketServerProtocol]
 
-    @staticmethod
-    async def config(options: Dict[str, Any]) -> None:
-        """
-        Configures the Wiresense library with the specified options.
-        :param options: Configuration options (key-value pairs).
-        :param options.port: The port for the web server and WebSocket server.
-        """
-
-        if not Wiresense.configured:
-            log.info("Starting Server...")
-            # run_server(port=options.get("port"))
-            server_task = asyncio.create_task(run_async_server(port=options.get("port")))
-            await asyncio.gather(server_task)
-        else:
-            log.info("Server already configured")
-
     def __init__(self, name: str, exec_function: Callable[[], Dict[str, Any]], base_file_path: str) -> None:
         """
         Initializes the Wiresense instance.
@@ -79,6 +63,22 @@ class Wiresense:
             writer = csv.writer(f)
             writer.writerow(["timestamp"] + list(data.keys()))
 
+    @staticmethod
+    async def config(options: Dict[str, Any]) -> None:
+        """
+        Configures the Wiresense library with the specified options.
+        :param options: Configuration options (key-value pairs).
+        :param options.port: The port for the web server and WebSocket server.
+        """
+
+        if not Wiresense.configured:
+            log.info("Starting Server...")
+            # run_server(port=options.get("port"))
+            server_task = asyncio.create_task(_run_async_server(port=options.get("port")))
+            await asyncio.gather(server_task)
+        else:
+            log.info("Server already configured")
+
     async def execute(self) -> str:
         """
         Runs the sensor's read function and sends the data to the WebSocket server.
@@ -103,11 +103,11 @@ class Wiresense:
 
         payload_str = json.dumps(payload)
 
-        await broadcast(payload_str)
+        await __broadcast(payload_str)
         return payload_str
 
 
-async def handle_http_request(request):
+async def _handle_http_request(request):
     """
     Handles an incoming HTTP request and serves the requested file if it exists.
 
@@ -138,7 +138,7 @@ async def handle_http_request(request):
         raise web.HTTPNotFound()
 
 
-async def websocket_handler(request):
+async def _websocket_handler(request):
     """
     Handles an incoming WebSocket connection.
 
@@ -151,21 +151,21 @@ async def websocket_handler(request):
     ws = web.WebSocketResponse()
     await ws.prepare(request)
 
-    await on_connect(ws)
+    await _on_connect(ws)
 
     async for msg in ws:
         if msg.type == aiohttp.WSMsgType.TEXT:
-            await on_message(ws, msg.data)
+            await _on_message(ws, msg.data)
         elif msg.type == aiohttp.WSMsgType.CLOSE:
             await ws.close()
         else:
             log.warning(f"Recieved unknown msg.type: '{msg.type}' from WS Client")
 
-    await on_disconnect(ws)
+    await _on_disconnect(ws)
     return ws
 
 
-async def on_connect(ws):
+async def _on_connect(ws):
     """
     Handles a new WebSocket client connection.
 
@@ -176,7 +176,7 @@ async def on_connect(ws):
     log.info(f"WebSocket Client connection established")
 
 
-async def on_disconnect(ws):
+async def _on_disconnect(ws):
     """
     Handles the disconnection of a WebSocket client.
 
@@ -187,7 +187,7 @@ async def on_disconnect(ws):
     log.info(f"WebSocket Client connection closed")
 
 
-async def on_message(ws, message: str):
+async def _on_message(ws, message: str):
     """
     Handles an incoming message from a WebSocket client and sends back a response.
 
@@ -202,7 +202,7 @@ async def on_message(ws, message: str):
     await ws.send_str(f"Message received!\n{message}")
 
 
-async def broadcast(message: str):
+async def _broadcast(message: str):
     """
     Broadcasts a message to all connected WebSocket clients.
 
@@ -214,7 +214,7 @@ async def broadcast(message: str):
     log.info("Broadcast message send!")
 
 
-async def run_async_server(*, host: str = "0.0.0.0", port: int = 8080):
+async def _run_async_server(*, host: str = "0.0.0.0", port: int = 8080):
     """
     Starts the web server with specified host and port.
 
@@ -224,8 +224,8 @@ async def run_async_server(*, host: str = "0.0.0.0", port: int = 8080):
     :param port: The port number to bind the server to (default is 8080).
     """
     app = web.Application()
-    app.router.add_get('/', websocket_handler)
-    app.router.add_get('/{path:.*}', handle_http_request)
+    app.router.add_get('/', _websocket_handler)
+    app.router.add_get('/{path:.*}', _handle_http_request)
 
     runner = web.AppRunner(app)
     await runner.setup()
