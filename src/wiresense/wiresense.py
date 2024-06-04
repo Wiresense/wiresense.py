@@ -107,7 +107,7 @@ class Wiresense:
 
         payload_str = json.dumps(payload)
 
-        await __broadcast(payload_str)
+        await _broadcast(payload_str)
         return payload_str
 
 
@@ -119,9 +119,10 @@ async def _handle_http_request(request):
     :return: A web.FileResponse object if the file is found, otherwise raises web.HTTPNotFound.
     """
 
-    url_path = request.match_info.get('path', '')
-    url_path = url_path.replace('\r', '\\r').replace('\n', '\\n')
+    url_path = request.match_info.get("path", "")
+    url_path = url_path.replace("\r", "\\r").replace("\n", "\\n")
     url_parts = url_path.split("/")
+
     if len(url_parts) == 2 and url_parts[1] == "data.csv":
         s_name = url_parts[0]
         try:
@@ -227,6 +228,7 @@ async def _run_async_server(*, host: str = "0.0.0.0", port: int = 8080):
     :param host: The host address to bind the server to (default is "0.0.0.0").
     :param port: The port number to bind the server to (default is 8080).
     """
+
     app = web.Application()
     app.router.add_get('/', _websocket_handler)
     app.router.add_get('/{path:.*}', _handle_http_request)
