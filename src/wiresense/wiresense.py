@@ -37,7 +37,8 @@ class Wiresense:
         if not Wiresense.configured:
             log.info("Starting Server...")
             # run_server(port=options.get("port"))
-            server_task = asyncio.create_task(run_async_server(port=options.get("port")))
+            server_task = asyncio.create_task(
+                run_async_server(port=options.get("port")))
             await asyncio.gather(server_task)
         else:
             log.info("Server already configured")
@@ -65,7 +66,8 @@ class Wiresense:
         # Validate exec_function
         data = exec_function()
         if not isinstance(data, dict) or not data:
-            raise ValueError("exec_function must return a non-empty dictionary.")
+            raise ValueError(
+                "exec_function must return a non-empty dictionary.")
 
         base_name, ext = os.path.splitext(self.base_file_path)
         dir_name = os.path.dirname(self.base_file_path)
@@ -88,11 +90,13 @@ class Wiresense:
         """
 
         if not Wiresense.configured:
-            raise RuntimeError("Wiresense is not configured. Call configure() before creating instances.")
+            raise RuntimeError(
+                "Wiresense is not configured. Call configure() before creating instances.")
 
         data = self.exec_function()
         if not isinstance(data, dict) or not data:
-            raise ValueError("exec_function must return a non-empty dictionary.")
+            raise ValueError(
+                "exec_function must return a non-empty dictionary.")
 
         payload = {"key": self.name, "data": data}
         timestamp = int(time.time())
@@ -120,20 +124,21 @@ async def handle_http_request(request):
     if len(url_parts) == 2 and url_parts[1] == "data.csv":
         s_name = url_parts[0]
         try:
-            file_path = [sensor.csv_file_path for sensor in Wiresense.sensors if sensor.name == s_name][0]
+            file_path = [
+                sensor.csv_file_path for sensor in Wiresense.sensors if sensor.name == s_name][0]
         except IndexError:
             log.info("Sensor not found!")
             raise web.HTTPNotFound()
 
         if file_path:
             if os.path.isfile(file_path):
-                log.info(f"File of Sensor: '{s_name}' send! ('{file_path}')")
+                log.info(f"File of Sensor: '{s_name.replace('\n', '').replace('\r', '')}' send! ('{file_path}')")
                 return web.FileResponse(file_path, headers={"Content-Type": "text/csv"})
             else:
-                log.error(f"File of Sensor: '{s_name}' does not exist! ('{file_path}')")
+                log.error(f"File of Sensor: '{s_name.replace('\n', '').replace('\r', '')}' does not exist! ('{file_path}')")
                 raise web.HTTPInternalServerError()
     else:
-        log.info(f"Invalid Path: '{url_path}'")
+        log.info(f"Invalid Path: '{url_path.replace('\n', '').replace('\r', '')}'")
         raise web.HTTPNotFound()
 
 
@@ -158,7 +163,8 @@ async def websocket_handler(request):
         elif msg.type == aiohttp.WSMsgType.CLOSE:
             await ws.close()
         else:
-            log.warning(f"Recieved unknown msg.type: '{msg.type}' from WS Client")
+            log.warning(
+                f"Recieved unknown msg.type: '{msg.type}' from WS Client")
 
     await on_disconnect(ws)
     return ws
