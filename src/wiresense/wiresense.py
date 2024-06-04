@@ -38,8 +38,12 @@ class Wiresense:
         self.name: str = ""
         self.exec_function: Callable[[], Dict[str, Any]]
 
+        excluded_chars = ["\n", "\r"]
         if any(sensor.name == name for sensor in Wiresense.sensors):
             raise ValueError(f"Sensor with name '{name}' already exists.")
+        elif any(ec in name for ec in excluded_chars):
+            excluded_chars_bytes = ", ".join([repr(ec.encode("UTF-8")) for ec in excluded_chars])
+            raise ValueError(f"Sensor name cannot include the following chars: {excluded_chars_bytes}")
 
         self.name = name
         self.exec_function = exec_function
