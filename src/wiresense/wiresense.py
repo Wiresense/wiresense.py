@@ -83,12 +83,12 @@ class Wiresense:
         else:
             log.info("Server already configured")
 
-    async def execute(self) -> str:
+    async def execute(self) -> Dict[str, Any]:
         """
         Runs the sensor's read function and sends the data to the WebSocket server.
         Also logs the data to the specified CSV file.
 
-        :return: The JSON payload as string sent to the WebSocket server.
+        :return: The JSON payload sent to the WebSocket server.
         """
 
         if not Wiresense.configured:
@@ -108,7 +108,7 @@ class Wiresense:
         payload_str = json.dumps(payload)
 
         await _broadcast(payload_str)
-        return payload_str
+        return payload
 
 
 async def _handle_http_request(request):
