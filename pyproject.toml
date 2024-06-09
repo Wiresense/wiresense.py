@@ -4,13 +4,13 @@ build-backend = "hatchling.build"
 
 [project]
 name = "wiresense"
-version = "1.0.1"
+version = "1.0.2"
 authors = [
     { name="Saladrian" }
 ]
 description = "Client library for Wiresense"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.8"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
