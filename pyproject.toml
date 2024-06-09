@@ -8,7 +8,7 @@ version = "1.0.1"
 authors = [
     { name="Saladrian" }
 ]
-description = "Client libary for Wiresense"
+description = "Client library for Wiresense"
 readme = "README.md"
 requires-python = ">=3.12"
 classifiers = [
