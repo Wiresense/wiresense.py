@@ -8,8 +8,11 @@ jobs:
     permissions:
       id-token: write # Mandatory for trusted publishing
     steps:
-      - name: Checkout
+      - name: Checkout 🛎️
         uses: actions/checkout@v4
-      - run: python3 -m pip install --upgrade build && python3 -m build
-      - name: Publish package
+      - name: Install and build package 🏗️
+        run: |
+          python3 -m pip install --upgrade build
+          python3 -m build
+      - name: Publish package 🚀
         uses: pypa/gh-action-pypi-publish@release/v1
