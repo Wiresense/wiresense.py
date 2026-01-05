@@ -9,7 +9,7 @@ jobs:
       id-token: write # Mandatory for trusted publishing
     steps:
       - name: Checkout 🛎️
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Install and build package 🏗️
         run: |
           python3 -m pip install --upgrade build
