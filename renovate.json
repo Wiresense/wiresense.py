@@ -1,0 +1,38 @@
+{
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"extends": ["config:recommended"],
+  "rangeStrategy": "bump",
+  "branchPrefix": "renovate/",
+  "additionalBranchPrefix": "{{{manager}}}/",
+  "labels": ["dependencies", "renovate"],
+  "commitMessagePrefix": "⬆️ Bump ",
+  "commitMessageAction": "",
+  "commitMessageTopic": "{{depName}}",
+  "commitMessageExtra": " to {{newVersion}}",
+  "packageRules": [
+    {
+      "matchManagers": ["poetry"],
+      "groupName": "python dependencies"
+    },
+    {
+      "matchPackageNames": ["aiohttp"],
+      "groupName": "aiohttp"
+    },
+    {
+      "matchPackageNames": ["websockets"],
+      "groupName": "websockets"
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "groupName": "github actions"
+    },
+    {
+      "matchPackageNames": ["actions/checkout"],
+      "groupName": "checkout action"
+    },
+    {
+      "matchPackageNames": ["pypa/gh-action-pypi-publish"],
+      "groupName": "pypi publish action"
+    }
+  ]
+}
